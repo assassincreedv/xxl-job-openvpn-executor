@@ -47,18 +47,34 @@ public class SampleXxlJob {
     @XxlJob("xxl-job-openvpn")
     public void httpJobHandler() throws Exception {
 
-        String url = "http://localhost:5000/clients/update_expiration";
+        String param = XxlJobHelper.getJobParam();
+        String jobId = null;
+        if (param==null || param.trim().length()==0) {
+            XxlJobHelper.log("param["+ param +"] invalid.");
+
+            XxlJobHelper.handleFail();
+            return;
+        }
+        if (param.startsWith("jobId:")) {
+            jobId = param.substring(param.indexOf("jobId:") + 6).trim();
+        }
+        String url = "http://localhost:5000/clients/update_expiration/" + jobId;
         String method = "PUT";
         String data = null;
 
         // param valid
-        if (url==null || url.trim().length()==0) {
+        if(jobId == null) {
+            XxlJobHelper.log("jobId is null, it is invalid.");
+            XxlJobHelper.handleFail();
+            return;
+        }
+        if (url == null || url.trim().length()==0) {
             XxlJobHelper.log("url["+ url +"] invalid.");
 
             XxlJobHelper.handleFail();
             return;
         }
-        if (method==null || !Arrays.asList("GET", "POST", "PUT", "DELETE").contains(method)) {
+        if (method == null || !Arrays.asList("GET", "POST", "PUT", "DELETE").contains(method)) {
             XxlJobHelper.log("method["+ method +"] invalid.");
 
             XxlJobHelper.handleFail();
