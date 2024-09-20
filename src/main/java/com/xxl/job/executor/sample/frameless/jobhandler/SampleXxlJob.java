@@ -58,7 +58,7 @@ public class SampleXxlJob {
         if (param.startsWith("jobId:")) {
             jobId = param.substring(param.indexOf("jobId:") + 6).trim();
         }
-        String url = "http://localhost:5000/clients/update_expiration/" + jobId;
+        String url = "http://localhost:" + System.getenv("API_PORT") + "/clients/update_expiration/" + jobId;
         String method = "PUT";
         String data = null;
 
